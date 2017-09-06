@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Vue.js</title>
+		<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+		<link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css">
+	</head>
+	<body>
+		
+		<div class="container" id="app">
+			
+			<h1>Vue.js</h1>
+			<div class="well">
+			<pre>{{[sortColumn, sortInverse]}}</pre>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-bordered table-striped table-hover">
+				<thead>
+					<tr>
+						<th>
+							<i class="fa fa-fw fa-sort" v-bind:class="{'fa-sort-amount-asc': sortColumn === 'name' && sortInverse === 'asc',
+							'fa-sort-amount-desc': sortColumn === 'name' && sortInverse === 'desc'}"></i>
+							<a href="#" v-on:click.prevent="doSort('name')">Nome</a>
+						</th>
+						<th>
+							<i class="fa fa-fw fa-sort" v-bind:class="{'fa-sort-amount-asc': sortColumn === 'city' && sortInverse === 'asc',
+							'fa-sort-amount-desc': sortColumn === 'city' && sortInverse === 'desc'}"></i>
+							<a href="#" v-on:click.prevent="doSort('city')">Cidade</a>
+						</th>
+						<th>
+							<i class="fa fa-fw fa-sort" v-bind:class="{'fa-sort-amount-asc': sortColumn === 'state' && sortInverse === 'asc',
+							'fa-sort-amount-desc': sortColumn === 'state' && sortInverse === 'desc'}"></i>
+							<a href="#" v-on:click.prevent="doSort('state')">Estado</a>
+						</th>
+						<th>
+							<i class="fa fa-fw fa-sort" v-bind:class="{'fa-sort-amount-asc': sortColumn === 'country' && sortInverse === 'asc',
+							'fa-sort-amount-desc': sortColumn === 'country' && sortInverse === 'desc'}"></i>
+							<a href="#" v-on:click.prevent="doSort('country')">País</a>
+						</th>
+						<th>
+							<i class="fa fa-fw fa-sort" v-bind:class="{'fa-sort-amount-asc': sortColumn === 'last_mod' && sortInverse === 'asc',
+							'fa-sort-amount-desc': sortColumn === 'last_mod' && sortInverse === 'desc'}"></i>
+							<a href="#" v-on:click.prevent="doSort('last_mod')">Atualizado em</a>
+						</th>
+						<th width="1%" nowrap>
+							<a href="#" v-on:click.prevent="openAllDetails">
+								<i class="fa fa-plus-square"
+								v-bind:class="[openDetails.length === 0 ? 'fa-plus-square' : 'fa-minus-square']"></i>
+							</a>
+						</th>
+					</tr>
+				</thead>
+				<tbody v-for="cervejaria in orderCervejarias">
+					<tr>
+						<td>{{cervejaria.name}}</td>
+						<td>{{cervejaria.city}}</td>
+						<td>{{cervejaria.state}}</td>
+						<td>{{cervejaria.country}}</td>
+						<td>{{cervejaria.last_mod}}</td>
+						<td>
+							<a href="#" v-show="cervejaria.descript != ''"
+								v-on:click.prevent="doOpenDetails(cervejaria.id)">
+								<i class="fa" v-bind:class="[openDetails.indexOf(cervejaria.id) > -1 ? 'fa-minus-square' : 'fa-plus-square']"></i>
+							</a>
+							<i class="fa fa-plus-square" v-show="cervejaria.descript == ''"
+							style="opacity: 0.3"></i>
+						</td>
+					</tr>
+					<tr v-show="openDetails.indexOf(cervejaria.id) > -1 && cervejaria.descript != ''">
+						<td colspan="6">{{cervejaria.descript}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	
+	<script src="node_modules/jquery/dist/jquery.js"></script>
+	<script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="node_modules/vue/dist/vue.js"></script>
+	<script src="node_modules/vue-resource/dist/vue-resource.js"></script>
+	<script src="node_modules/lodash/lodash.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
