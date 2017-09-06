@@ -5,19 +5,44 @@
 		<title>Vue.js</title>
 		<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
 		<link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css">
+		<link rel="stylesheet" href="node_modules/select2/dist/css/select2.css">
 	</head>
-	<body> 
+	<body>
 		
 		<div class="container" id="app">
 			
 			<h1>Vue.js</h1>
-
-			<div class="well">
+			
+			<!-- <div class="well">
 				<pre>{{[sortColumn, sortInverse]}}</pre>
+			</div> -->
+		
+			<div class="well">
+				<div class="row">
+					<div class="col-md-6">
+						<input 
+							class="form-control" 
+							v-on:keyup.enter="doFilter" 
+							v-model="filterTerm" 
+							type="text" 
+							placeholder="Digite o termo para filtrar"></input>
+					</div>
+					<div class="col-md-6">
+						<select class="form-control" 
+							ref="columnsToFilterSelect" v-model="columnsToFilter" multiple>
+							<option value="name">Nome</option>
+							<option value="city">Cidade</option>
+							<option value="state">Estado</option>
+							<option value="country">País</option>
+						</select>
+					</div>
+				</div>
+				
 			</div>
+			
 			<div class="table-responsive">
 				<table class="table table-bordered table-striped table-hover">
-					<thead>					
+					<thead>
 						<tr>
 							<th>
 								<i class="fa fa-fw fa-sort" v-bind:class="{'fa-sort-amount-asc': sortColumn === 'name' && sortInverse === 'asc',
@@ -52,13 +77,13 @@
 							</th>
 						</tr>
 					</thead>
-					<tbody v-for="cervejaria in orderCervejarias">
+					<tbody v-for="cervejaria in cervejarias">
 						<tr>
 							<td>{{cervejaria.name}}</td>
 							<td>{{cervejaria.city}}</td>
 							<td>{{cervejaria.state}}</td>
 							<td>{{cervejaria.country}}</td>
-							<td>{{cervejaria.last_mod}}</td>
+							<td>{{cervejaria.last_mod | dateFormat}}</td>
 							<td>
 								<a href="#" v-show="cervejaria.descript != ''"
 									v-on:click.prevent="doOpenDetails(cervejaria.id)">
@@ -75,12 +100,14 @@
 				</table>
 			</div>
 		</div>
-		
+	
 		<script src="node_modules/jquery/dist/jquery.js"></script>
 		<script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
 		<script src="node_modules/vue/dist/vue.js"></script>
 		<script src="node_modules/vue-resource/dist/vue-resource.js"></script>
 		<script src="node_modules/lodash/lodash.js"></script>
+		<script src="node_modules/moment/moment.js"></script>
+		<script src="node_modules/select2/dist/js/select2.js"></script>
 		<script src="app.js"></script>
 	</body>
 </html>

@@ -3,7 +3,9 @@ new Vue({
     el: '#app',
 
     data: {
-        cervejarias: [],
+        columnsToFilter: [],
+        filterTerm: '',
+        all: [],
         openDetails: [],
         sortColumn: 'name',
         sortInverse: 'asc'
@@ -16,6 +18,14 @@ new Vue({
 
             self.sortColumn = column;
             self.sortInverse = self.sortInverse == 'asc' ? 'desc' : 'asc';
+
+        },
+        doFilter: function() {
+
+            var self = this,
+                filtered = _.filter(self.all, function(cervejaria) {
+
+                });
 
         },
         doOpenDetails: function(id) {
@@ -33,41 +43,60 @@ new Vue({
         openAllDetails: function() {
 
             var self = this;
-            console.log(_);
 
             if (self.openDetails.length > 0) {
                 self.openDetails = [];
             } else {
                 // Preenche o array com todos os ids de cervejaria
-                self.openDetails = _.map(self.cervejarias, 'id');
+                self.openDetails = _.map(self.all, 'id');
             }
         },
         iconOrder: function() {
-        	if(this.sortColumn === 'name'){        	
-    			return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
-        	}else if(this.sortColumn === 'city'){
-        		return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
-        	}else if(this.sortColumn === 'state'){
-        		return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
-        	}else if(this.sortColumn === 'country'){
-        		return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
-        	}else if(this.sortColumn === 'last_mod'){
-        		return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
-        	}        
+            if (this.sortColumn === 'name') {
+                return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
+            } else if (this.sortColumn === 'city') {
+                return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
+            } else if (this.sortColumn === 'state') {
+                return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
+            } else if (this.sortColumn === 'country') {
+                return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
+            } else if (this.sortColumn === 'last_mod') {
+                return this.sortInverse === 'asc' ? 'fa-sort-amount-asc' : 'fa-sort-amount-asc';
+            }
         }
     },
 
     computed: {
-        orderCervejarias: function(col, inv) {
-            return _.orderBy(this.cervejarias, this.sortColumn, this.sortInverse);
+        cervejarias: function() {
+
+            var self = this;
+            
+            var list = _.orderBy(self.all, self.sortColumn, self.sortInverse),
+                filter = self.filterTerm;
+
+            if (_.isEmpty(filter) || self.columnsToFilter.length === 0) {
+                return list;
+            }
+
+            return _.filter(list, function(li) {
+                // .some quebra o loop na primeira verificaç~ao que retornar true
+                return self.columnsToFilter.some(function(column) {
+                    return li[column].toLowerCase().indexOf(filter.toLowerCase()) >= 0;
+                });
+            });
         }
     },
 
     created: function() {
+        
         var self = this;
+        
         self.$http.get('http://localhost:3000/breweries').then(function(response) {
-            self.cervejarias = response.data;
+            self.all = response.data;
         });
+
+        console.log(self.$refs);
+
     },
 
     filters: {
@@ -78,7 +107,15 @@ new Vue({
         },
         json: function(value) {
             return JSON.stringify(value, null, 2);
+        },
+        dateFormat: function(value) {
+            return moment(value).format('DD/MM/YYYY HH:mm:ss');
         }
     }
 
 });
+
+/* Outra forma de criar filtros */
+// Vue.filter('dateFormat', function(value){
+//     return moment(value).format('DD/MM/YYYY HH:mm:ss');
+// });
